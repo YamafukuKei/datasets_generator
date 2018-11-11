@@ -34,7 +34,7 @@
   <!-- <!-\- Joint -\-> -->
   <joint name="joint_kinect" type="fixed">
     <!-- <origin xyz="0.8872 -0.6445 0.5718" rpy="-0.0087 0.5501 2.0698" /> -->
-    <origin xyz="1.0 0.0 0.5" rpy="0.0 0.35 3.14" />
+    <origin xyz="1.0 0.0 0.5" rpy="0.0 0.35 -3.14" />
     <parent link="camera_link"/>
     <child link="kinect_link"/>
   </joint>
@@ -55,8 +55,8 @@
         <horizontal_fov>1.4678219413</horizontal_fov>
         <image>
           <format>B8G8R8</format>
-          <width>512</width>
-          <height>424</height>
+          <width>1920</width>
+          <height>1080</height>
         </image>
         <clip>
           <near>0.05</near>
@@ -65,7 +65,7 @@
         <noise>
           <type>gaussian</type>
           <mean>0.0</mean>
-          <stddev>0.005</stddev>
+          <stddev>0.1</stddev>
         </noise>
       </camera>
       <plugin filename="libgazebo_ros_openni_kinect.so" name="kinect_camera_controller">
@@ -96,8 +96,8 @@
         <horizontal_fov>1.4678219413</horizontal_fov>
         <image>
           <format>B8G8R8</format>
-          <width>512</width>
-          <height>424</height>
+          <width>960</width>
+          <height>540</height>
         </image>
         <clip>
           <near>0.05</near>
@@ -106,7 +106,7 @@
         <noise>
           <type>gaussian</type>
           <mean>0.0</mean>
-          <stddev>0.005</stddev>
+          <stddev>0.1</stddev>
         </noise>
       </camera>
       <plugin filename="libgazebo_ros_openni_kinect.so" name="kinect_camera_controller">
@@ -147,7 +147,7 @@
         <noise>
           <type>gaussian</type>
           <mean>0.0</mean>
-          <stddev>0.005</stddev>
+          <stddev>0.1</stddev>
         </noise>
       </camera>
       <plugin filename="libgazebo_ros_openni_kinect.so" name="kinect_camera_controller">

@@ -11,6 +11,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  pcl_conversions
+  pcl_ros
+  sensor_msgs
+
 )
 
 ## System dependencies are found with CMake's conventions
@@ -197,3 +201,5 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+add_executable(record src/record.cpp)
+target_link_libraries(record  ${catkin_LIBRARIES})
