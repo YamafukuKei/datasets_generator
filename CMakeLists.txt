@@ -204,3 +204,5 @@ include_directories(
 # catkin_add_nosetests(test)
 add_executable(record src/record.cpp)
 target_link_libraries(record  ${catkin_LIBRARIES})
+add_executable(make_voxel_data src/make_voxel_data.cpp)
+target_link_libraries(make_voxel_data  ${catkin_LIBRARIES})
