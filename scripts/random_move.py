@@ -85,13 +85,6 @@ def random_state_make():
         pi = random.uniform(-3.14, 3.14)
         ya = random.uniform(-3.14, 3.14)
 
-        pos.pose.position.x = 0
-        pos.pose.position.y = 0
-        pos.pose.position.z = 0.1
-        ro = 0
-        pi = 0
-        ya = 0
-
         quat = quaternion_from_euler(ro, pi, ya)
         pos.pose.orientation.x = quat[0]
         pos.pose.orientation.y = quat[1]
