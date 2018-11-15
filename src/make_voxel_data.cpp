@@ -111,7 +111,7 @@ void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float diff)
 
 void translation(float x, float y, float z, float diff, float*arr)
 {
-  std::cout << arr[0] << arr[1] << arr[2] << std::endl;
+//  std::cout << arr[0] << arr[1] << arr[2] << std::endl;
   float transed[7] = {0};
   transed[0] = (arr[0] - x) / diff;
   transed[1] = (arr[1] - y) / diff;
@@ -121,7 +121,7 @@ void translation(float x, float y, float z, float diff, float*arr)
   transed[5] = arr[5];
   transed[6] = arr[6];
 
-  std::cout << transed[0] << transed[1] << transed[2] << std::endl;
+//  std::cout << transed[0] << transed[1] << transed[2] << std::endl;
   char newfile[100];
   sprintf(newfile, "learn_data/tf_%d.csv", m);
   FILE *fp;
@@ -175,9 +175,9 @@ int main (int argc, char** argv)
     float diff_y = max_y - min_y;
     float diff_z = max_z - min_z;
 
-    std::cout << "diff_x = " << max_x << " - " << min_x << " = " << diff_x << std::endl;
-    std::cout << "diff_y = " << max_y << " - " << min_y << " = " << diff_y << std::endl;
-    std::cout << "diff_z = " << max_z << " - " << min_z << " = " << diff_z << std::endl;
+//    std::cout << "diff_x = " << max_x << " - " << min_x << " = " << diff_x << std::endl;
+//    std::cout << "diff_y = " << max_y << " - " << min_y << " = " << diff_y << std::endl;
+//    std::cout << "diff_z = " << max_z << " - " << min_z << " = " << diff_z << std::endl;
 
     float diff_max = 0;
     diff_max = diff_x;
