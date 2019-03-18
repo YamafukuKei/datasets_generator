@@ -9,7 +9,7 @@
 #define VOXEL_N 50
 #define FILE_N 50000
 
-const std::string FileName("voxel_pos_ori_23500.hdf5");
+const std::string FileName("voxel_pos_ori_25000.hdf5");
 const std::string DatasetName("voxelandtf");
 const std::string member_voxel("voxel");
 const std::string member_tf("tf");
@@ -46,6 +46,7 @@ const std::string member_tf("tf");
 
 
 
+int voxel[VOXEL_N*VOXEL_N*VOXEL_N] = {0};
 int m = 1;
 
 class Size
@@ -103,47 +104,50 @@ Size Min_Max(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
     return size;
 }
 
-//int counter(int hako[VOXEL_N][VOXEL_N][VOXEL_N])
+//void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float resol)
 //{
-//  int ct = 0;
+//  for (int i = 0; i<VOXEL_N*VOXEL_N*VOXEL_N; i++)
+//  {
+//    voxel[i] = 0;
+//  }
+////   int ct = 0;
 //  for (int i = 0; i < VOXEL_N; i++){
+//    float min_z = i*resol;
+//    float max_z = (i+1)*resol;
 //    for (int j = 0; j < VOXEL_N; j++){
+//      float min_y = j*resol;
+//      float max_y = (j+1)*resol;
 //      for (int k = 0; k < VOXEL_N; k++){
-//        for (int n = 0; n < VOXEL_N; n++){
-//          if (voxel[i][j][k] == 1){
-//            ct += 1;
+//        float min_x = k*resol;
+//        float max_x = (k+1)*resol;
+//        for (int n = 0; n < cloud->points.size(); n++){
+//          if ((cloud->points[n].x > min_x) && (cloud->points[n].x < max_x) &&
+//              (cloud->points[n].y > min_y) && (cloud->points[n].y < max_y) &&
+//              (cloud->points[n].z > min_z) && (cloud->points[n].z < max_z)){
+//            voxel[i*VOXEL_N*VOXEL_N + j*VOXEL_N + k] = 1;
+////            ct += 1;
+//            break;
 //          }
 //        }
 //      }
 //    }
 //  }
-//  return ct;
+////  std::cout << ct << std::endl;
 //}
-void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float resol, int voxel[VOXEL_N][VOXEL_N][VOXEL_N])
+
+void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float resol)
 {
-//   int ct = 0;
-  for (int i = 0; i < VOXEL_N; i++){
-    float min_x = i*resol;
-    float max_x = (i+1)*resol;
-    for (int j = 0; j < VOXEL_N; j++){
-      float min_y = j*resol;
-      float max_y = (j+1)*resol;
-      for (int k = 0; k < VOXEL_N; k++){
-        float min_z = k*resol;
-        float max_z = (k+1)*resol;
-        for (int n = 0; n < cloud->points.size(); n++){
-          if ((cloud->points[n].x > min_x) && (cloud->points[n].x < max_x) &&
-              (cloud->points[n].y > min_y) && (cloud->points[n].y < max_y) &&
-              (cloud->points[n].z > min_z) && (cloud->points[n].z < max_z)){
-            voxel[i][j][k] = 1;
-//            ct += 1;
-            break;
-          }
-        }
-      }
-    }
+  for (int i = 0; i<VOXEL_N*VOXEL_N*VOXEL_N; i++)
+  {
+    voxel[i] = 0;
   }
-//  std::cout << ct << std::endl;
+  for (int n = 0; n < cloud->points.size(); n++)
+  {
+  int point_x = cloud->points[n].x/resol;
+  int point_y = cloud->points[n].y/resol;
+  int point_z = cloud->points[n].z/resol;
+  voxel[(point_x*VOXEL_N*VOXEL_N) + (point_y*VOXEL_N) + point_z] = 1;
+  }
 }
 
 void translation(float x, float y, float z, float diff, float*arr, float transed[7])
@@ -173,71 +177,56 @@ void translation(float x, float y, float z, float diff, float*arr, float transed
   fclose(fp);
 }
 
-void save_data(int voxel[VOXEL_N][VOXEL_N][VOXEL_N], float transed_tf[7])
-{
-//  PersonalInformation person_list[] = {
-//      { 18, 'M', "Mary",  152.0   },
-//      { 32, 'F', "Tom",   178.6   },
-//      { 29, 'M', "Tarou", 166.6   }
-//  };
-//  int length = sizeof(person_list) / sizeof(PersonalInformation);
-//  // the array of each length of multidimentional data.
-//  hsize_t dim[1];
-//  dim[0] = sizeof(person_list) / sizeof(PersonalInformation);
-//
-//  // the length of dim
-//  int rank = sizeof(dim) / sizeof(hsize_t);
-//
-//  // defining the datatype to pass HDF55
-//  H5::CompType mtype(sizeof(PersonalInformation));
-//  mtype.insertMember(member_voxel, HOFFSET(PersonalInformation, age), H5::PredType::NATIVE_INT);
-//  mtype.insertMember(member_tf, HOFFSET(PersonalInformation, height), H5::PredType::NATIVE_FLOAT);
-//
-//  // preparation of a dataset and a file.
-//  H5::DataSpace space(rank, dim);
-//  H5::H5File *file = new H5::H5File(FileName, H5F_ACC_TRUNC);
-//  H5::Group *group = new H5::Group(file->createGroup(GroupName, mtype, space));
-//  H5::DataSet *dataset = new H5::DataSet(group->createDataSet(DatasetName, mtype, space));
-//  // Write
-//  dataset->write(person_list, mtype);
-//
-//  delete dataset;
-//  delete group;
-//  delete file;
-}
+//void save_data(int voxel[VOXEL_N][VOXEL_N][VOXEL_N], float transed_tf[7])
+//{
+////  PersonalInformation person_list[] = {
+////      { 18, 'M', "Mary",  152.0   },
+////      { 32, 'F', "Tom",   178.6   },
+////      { 29, 'M', "Tarou", 166.6   }
+////  };
+////  int length = sizeof(person_list) / sizeof(PersonalInformation);
+////  // the array of each length of multidimentional data.
+////  hsize_t dim[1];
+////  dim[0] = sizeof(person_list) / sizeof(PersonalInformation);
+////
+////  // the length of dim
+////  int rank = sizeof(dim) / sizeof(hsize_t);
+////
+////  // defining the datatype to pass HDF55
+////  H5::CompType mtype(sizeof(PersonalInformation));
+////  mtype.insertMember(member_voxel, HOFFSET(PersonalInformation, age), H5::PredType::NATIVE_INT);
+////  mtype.insertMember(member_tf, HOFFSET(PersonalInformation, height), H5::PredType::NATIVE_FLOAT);
+////
+////  // preparation of a dataset and a file.
+////  H5::DataSpace space(rank, dim);
+////  H5::H5File *file = new H5::H5File(FileName, H5F_ACC_TRUNC);
+////  H5::Group *group = new H5::Group(file->createGroup(GroupName, mtype, space));
+////  H5::DataSet *dataset = new H5::DataSet(group->createDataSet(DatasetName, mtype, space));
+////  // Write
+////  dataset->write(person_list, mtype);
+////
+////  delete dataset;
+////  delete group;
+////  delete file;
+//}
 
 int main (int argc, char** argv)
 {
   std::cout << "start!" << std::endl;
   std::cout << "now converting..." << std::endl;
-  for(int n = 0; n < atoi(argv[1])-10; n++){
-    char tf_file[100];
-    sprintf(tf_file, "tf_%d.csv", n+10);
-    std::ifstream ifs;  // ファイル読み取り用ストリーム
-    ifs.open(tf_file);
-    if(ifs.fail()){
-      std::cerr << "cannot open file_"<< n << "!!\n";
-      continue;
-    }
-
+  std::cout << atoi(argv[1])+1 << std::endl;
+  for(int n = 1; n < atoi(argv[1])+1; n++){
+    std::cout << n << std::endl;
     char coo[256] = {0};
-    float arr[7] = {0};
-    for(int i=0 ; i<7 ; i++){
-      ifs.getline(coo,sizeof(coo));	// 一行読み込んで…
-      arr[i] = atof(coo);	// それを配列に格納
-    }
-
-    float min_coordinate[3] = {0};
-    float max_coordinate[3] = {0};
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr new_cloud (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr normarized_cloud (new pcl::PointCloud<pcl::PointXYZ>);
 
   // Replace the path below with the path where you saved your file
     char filename[100];
-    sprintf(filename, "cloud_%d.pcd", n+10);
+    sprintf(filename, "cloud_%d.pcd", n);
     pcl::io::loadPCDFile(filename, *cloud);
-    pcl::io::loadPCDFile(filename, *new_cloud);
+    pcl::io::loadPCDFile(filename, *normarized_cloud);
 
     float max_x = Min_Max(cloud).max_x + 0.02;
     float max_y = Min_Max(cloud).max_y + 0.02;
@@ -263,23 +252,23 @@ int main (int argc, char** argv)
       diff_max = diff_z;
     }
 
-    if (
-    ((arr[0]-min_x)/diff_max < 0) || ((arr[0]-min_x)/diff_max > 1) ||
-    ((arr[1]-min_y)/diff_max < 0) || ((arr[1]-min_y)/diff_max > 1) ||
-    ((arr[2]-min_z)/diff_max < 0) || ((arr[2]-min_z)/diff_max > 1)){
-      continue;
-    }
-
     for (size_t i = 0; i < cloud->points.size(); ++i)
     {
-      new_cloud->points[i].x = (cloud->points[i].x - min_x)/diff_max;
-      new_cloud->points[i].y = (cloud->points[i].y - min_y)/diff_max;
-      new_cloud->points[i].z = (cloud->points[i].z - min_z)/diff_max;
+      normarized_cloud->points[i].x = (cloud->points[i].x - min_x)/diff_max;
+      normarized_cloud->points[i].y = (cloud->points[i].y - min_y)/diff_max;
+      normarized_cloud->points[i].z = (cloud->points[i].z - min_z)/diff_max;
     }
 
-    int voxel[VOXEL_N][VOXEL_N][VOXEL_N] = {0};
-    make_voxel(new_cloud, (1/float(VOXEL_N)), voxel);
+    float leaf = float(1.0/VOXEL_N);
+    pcl::VoxelGrid<pcl::PointXYZ> sor;
+    sor.setInputCloud(normarized_cloud);
+    sor.setLeafSize(leaf, leaf, leaf);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr output (new pcl::PointCloud<pcl::PointXYZ>);
+    sor.filter(*output);
 
+    make_voxel(output, leaf);
+
+    //save voxel data
     char newfile[100];
     sprintf(newfile, "learn_data/voxel_%d.csv", m);
     FILE *fp;
@@ -287,18 +276,40 @@ int main (int argc, char** argv)
     for(int i = 0; i < VOXEL_N; i++){
       for(int j = 0; j < VOXEL_N; j++){
         for(int k = 0; k < VOXEL_N; k++){
-          fprintf(fp, "%d\n", voxel[i][j][k]);
+          fprintf(fp, "%d\n", voxel[(i*VOXEL_N*VOXEL_N) + (j*VOXEL_N) + k]);
         }
       }
     }
     fclose(fp);
 
+    // processing of tf
+    char tf_file[100];
+    sprintf(tf_file, "tf_%d.csv", n);
+    std::ifstream ifs;  // ファイル読み取り用ストリーム
+    ifs.open(tf_file);
+    if(ifs.fail()){
+      std::cerr << "cannot open file_"<< n << "!!\n";
+      continue;
+    }
+    float arr[7] = {0};
+    for(int i=0 ; i<7 ; i++){
+      ifs.getline(coo,sizeof(coo));	// 一行読み込んで…
+      arr[i] = atof(coo);	// それを配列に格納
+    }
+
+    // for validation
+    if (
+    ((arr[0]-min_x)/diff_max < 0) || ((arr[0]-min_x)/diff_max > 1) ||
+    ((arr[1]-min_y)/diff_max < 0) || ((arr[1]-min_y)/diff_max > 1) ||
+    ((arr[2]-min_z)/diff_max < 0) || ((arr[2]-min_z)/diff_max > 1)){
+      continue;
+    }
+
     float transed_tf[7] = {0};
     translation(min_x, min_y, min_z, diff_max, arr, transed_tf);
-
     m += 1;
 
-    save_data(voxel, transed_tf);
+//    save_data(voxel, transed_tf);
 
 //    pcl::visualization::CloudViewer viewer("Cloud Viewer");
 //    viewer.showCloud(new_cloud);
@@ -308,27 +319,7 @@ int main (int argc, char** argv)
 //    {
 //    user_data++;
 //    }
-  //  ros::NodeHandle n;
-//  ros::NodeHandle nh;
 //
-//  message_filters::Subscriber<sensor_msgs::PointCloud2> sub1(nh, "input", 1);
-//  message_filters::Subscriber<geometry_msgs::PoseStamped> sub2(nh, "/posestamped_obj", 1);
-//  typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::PointCloud2, geometry_msgs::PoseStamped> MySyncPolicy;
-//  message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(5), sub1, sub2);
-//  sync.registerCallback(boost::bind(&cloud_cb, _1, _2));
-////    ros::spin();
-//
-//  ros::Rate loop_rate(1000);
-//  while (ros::ok()){
-//    ros::spinOnce();
-//    loop_rate.sleep();
-//    if (t == max_data)
-//    {
-//      break;
-//    }
-//  }
-
-
   }
 
   std::cout << "finish !!" << std::endl;
