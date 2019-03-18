@@ -19,6 +19,7 @@ tf_buffer = tf2_ros.Buffer()
 tf_listner = tf2_ros.TransformListener(tf_buffer)
 
 def transform_3D_point_to_new_frame(xyz_point_from_sensor, from_frame_id):
+    to_frame = "kinect_rgb_optical_frame"
 
     pose_stamped = geometry_msgs.msg.PoseStamped()
     pose_stamped.header.frame_id = from_frame_id
@@ -31,7 +32,7 @@ def transform_3D_point_to_new_frame(xyz_point_from_sensor, from_frame_id):
     pose_stamped.pose.orientation.z = xyz_point_from_sensor.orientation.z
     pose_stamped.pose.orientation.w = xyz_point_from_sensor.orientation.w
 
-    transform = tf_buffer.lookup_transform("kinect_rgb_optical_frame",
+    transform = tf_buffer.lookup_transform(to_frame,
                                                 pose_stamped.header.frame_id,
                                                 rospy.Time(0),
                                                 rospy.Duration(1.0))
@@ -91,10 +92,7 @@ def random_state_make():
         pos.pose.orientation.z = quat[2]
         pos.pose.orientation.w = quat[3]
 
-        ps.header.stamp = rospy.Time.now()
-
-        pub1.publish(pos)
-
+        ## transform the frame of PointCloud
         cloud_from_camera = transform_3D_point_to_new_frame(pos.pose, "world")
         ps.pose.position.x = cloud_from_camera.pose.position.x
         ps.pose.position.y = cloud_from_camera.pose.position.y
@@ -104,7 +102,8 @@ def random_state_make():
         ps.pose.orientation.z = cloud_from_camera.pose.orientation.z
         ps.pose.orientation.w = cloud_from_camera.pose.orientation.w
 ##        print(cloud_from_camera)
-
+        ps.header.stamp = rospy.Time.now()
+        pub1.publish(pos)
         pub2.publish(ps)
 
         print "ROS_time(state_pub) :",ps.header.stamp
