@@ -102,8 +102,8 @@ def random_state_make():
         ps.pose.orientation.z = cloud_from_camera.pose.orientation.z
         ps.pose.orientation.w = cloud_from_camera.pose.orientation.w
 ##        print(cloud_from_camera)
-        ps.header.stamp = rospy.Time.now()
         pub1.publish(pos)
+        ps.header.stamp = rospy.Time.now()
         pub2.publish(ps)
 
         print "ROS_time(state_pub) :",ps.header.stamp

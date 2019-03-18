@@ -29,6 +29,7 @@
 
 typedef pcl::PointCloud<pcl::PointXYZRGBA> Cloud;
 int t = 0;
+int count = 0;
 
 ros::Publisher pub;
 
@@ -41,21 +42,36 @@ double roll = 0;
 double pitch = 0.35;
 double yaw = -3.14;
 
-void
-get_tf (const geometry_msgs::PoseStampedConstPtr& pose)
+class PoseObj
 {
-  //std::cout << "ROS_time(record_tf   ) : " << ros::Time::now() << std::endl;
+public:
+  double pos_x;
+  double pos_y;
+  double pos_z;
+
+  double ori_x;
+  double ori_y;
+  double ori_z;
+  double ori_w;
+
+  ros::Time time;
+};
+
+PoseObj poseobj;
+
+void
+get_tf ()
+{
   float tf[7] = {0};
-  tf[0] = pose->pose.position.x;
-  tf[1] = pose->pose.position.y;
-  tf[2] = pose->pose.position.z;
+  tf[0] = poseobj.pos_x;
+  tf[1] = poseobj.pos_y;
+  tf[2] = poseobj.pos_z;
 
-  tf[3] = pose->pose.orientation.x;
-  tf[4] = pose->pose.orientation.y;
-  tf[5] = pose->pose.orientation.z;
-  tf[6] = pose->pose.orientation.w;
+  tf[3] = poseobj.ori_x;
+  tf[4] = poseobj.ori_y;
+  tf[5] = poseobj.ori_z;
+  tf[6] = poseobj.ori_w;
 
-//  printf("%f,%f,%f,%f,%f,%f,%f\n",tf[0], tf[1], tf[2], tf[3], tf[4], tf[5], tf[6]);
   char filename[100];
   sprintf(filename, "tf_%d.csv", t);
   FILE *fp;
@@ -69,12 +85,37 @@ get_tf (const geometry_msgs::PoseStampedConstPtr& pose)
 }
 
 void
-cloud_cb (const sensor_msgs::PointCloud2ConstPtr& sensor_cloud, const geometry_msgs::PoseStampedConstPtr& pose)
+pose_cb (const geometry_msgs::PoseStampedConstPtr& pose)
 {
-  if (pose->header.stamp < sensor_cloud->header.stamp)
+  if (count == 0)
   {
+  poseobj.pos_x = pose->pose.position.x;
+  poseobj.pos_y = pose->pose.position.y;
+  poseobj.pos_z = pose->pose.position.z;
+
+  poseobj.ori_x = pose->pose.orientation.x;
+  poseobj.ori_y = pose->pose.orientation.y;
+  poseobj.ori_z = pose->pose.orientation.z;
+  poseobj.ori_w = pose->pose.orientation.w;
+
+  poseobj.time = pose->header.stamp;
+
+  count = 1;
+  }
+}
+
+void
+cloud_cb (const sensor_msgs::PointCloud2ConstPtr& sensor_cloud)
+{
+  // 実験によりoffsetの値を算出
+  double offset1 = -0.055;
+  double offset2 = 0.03;
+
+  if (count == 1 && poseobj.time + ros::Duration(offset1) < sensor_cloud->header.stamp && poseobj.time + ros::Duration(offset2) > sensor_cloud->header.stamp)
+  {
+    count = 0;
     t += 1;
-    get_tf(pose);
+    get_tf();
     std::cout << "ROS_time(record_cloud) : " << ros::Time::now() << std::endl;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg (*sensor_cloud, *cloud);
@@ -119,6 +160,9 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& sensor_cloud, const geometry_m
     pcl::io::savePCDFileASCII (filename, *cloud_filtered);
   //  std::cout << filename << std::endl;
   //  std::cerr << "Saved " << cloud_filtered->points.size () << " data points to save.pcd." << std::endl;
+  }else if (poseobj.time + ros::Duration(offset2) < sensor_cloud->header.stamp)
+  {
+    count = 0;
   }
 }
 
@@ -131,12 +175,14 @@ main (int argc, char** argv)
   //  ros::NodeHandle n;
   ros::NodeHandle nh;
 
-  message_filters::Subscriber<sensor_msgs::PointCloud2> sub1(nh, "input", 1);
-  message_filters::Subscriber<geometry_msgs::PoseStamped> sub2(nh, "/posestamped_obj", 1);
-  typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::PointCloud2, geometry_msgs::PoseStamped> MySyncPolicy;
-  message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(5), sub1, sub2);
-  sync.registerCallback(boost::bind(&cloud_cb, _1, _2));
-//    ros::spin();
+//  message_filters::Subscriber<sensor_msgs::PointCloud2> sub1(nh, "input", 1);
+//  message_filters::Subscriber<geometry_msgs::PoseStamped> sub2(nh, "/posestamped_obj", 1);
+//  typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::PointCloud2, geometry_msgs::PoseStamped> MySyncPolicy;
+//  message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(5), sub1, sub2); // mysyncpolicy(queu_size)
+//  sync.registerCallback(boost::bind(&cloud_cb, _1, _2));
+
+  ros::Subscriber sub1 = nh.subscribe("input", 1, cloud_cb);
+  ros::Subscriber sub2 = nh.subscribe("/posestamped_obj", 1, pose_cb);
 
   ros::Rate loop_rate(1000);
   while (ros::ok()){
