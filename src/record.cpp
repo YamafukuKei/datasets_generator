@@ -108,8 +108,8 @@ void
 cloud_cb (const sensor_msgs::PointCloud2ConstPtr& sensor_cloud)
 {
   // 実験によりoffsetの値を算出
-  double offset1 = -0.055;
-  double offset2 = 0.03;
+  double offset1 = -0.05;
+  double offset2 = 0.025;
 
   if (count == 1 && poseobj.time + ros::Duration(offset1) < sensor_cloud->header.stamp && poseobj.time + ros::Duration(offset2) > sensor_cloud->header.stamp)
   {

@@ -104,37 +104,6 @@ Size Min_Max(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
     return size;
 }
 
-//void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float resol)
-//{
-//  for (int i = 0; i<VOXEL_N*VOXEL_N*VOXEL_N; i++)
-//  {
-//    voxel[i] = 0;
-//  }
-////   int ct = 0;
-//  for (int i = 0; i < VOXEL_N; i++){
-//    float min_z = i*resol;
-//    float max_z = (i+1)*resol;
-//    for (int j = 0; j < VOXEL_N; j++){
-//      float min_y = j*resol;
-//      float max_y = (j+1)*resol;
-//      for (int k = 0; k < VOXEL_N; k++){
-//        float min_x = k*resol;
-//        float max_x = (k+1)*resol;
-//        for (int n = 0; n < cloud->points.size(); n++){
-//          if ((cloud->points[n].x > min_x) && (cloud->points[n].x < max_x) &&
-//              (cloud->points[n].y > min_y) && (cloud->points[n].y < max_y) &&
-//              (cloud->points[n].z > min_z) && (cloud->points[n].z < max_z)){
-//            voxel[i*VOXEL_N*VOXEL_N + j*VOXEL_N + k] = 1;
-////            ct += 1;
-//            break;
-//          }
-//        }
-//      }
-//    }
-//  }
-////  std::cout << ct << std::endl;
-//}
-
 void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float resol)
 {
   for (int i = 0; i<VOXEL_N*VOXEL_N*VOXEL_N; i++)
@@ -152,11 +121,6 @@ void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float resol)
 
 void translation(float x, float y, float z, float diff, float*arr, float transed[7])
 {
-//  std::cout << "min_x = " << x << std::endl;
-//  std::cout << "min_y = " << y << std::endl;
-//  std::cout << "min_z = " << z << std::endl;
-
-//  std::cout << "before: " << arr[0] << "," << arr[1] << "," << arr[2] << std::endl;
   transed[0] = (arr[0] - x) / diff;
   transed[1] = (arr[1] - y) / diff;
   transed[2] = (arr[2] - z) / diff;
@@ -177,46 +141,12 @@ void translation(float x, float y, float z, float diff, float*arr, float transed
   fclose(fp);
 }
 
-//void save_data(int voxel[VOXEL_N][VOXEL_N][VOXEL_N], float transed_tf[7])
-//{
-////  PersonalInformation person_list[] = {
-////      { 18, 'M', "Mary",  152.0   },
-////      { 32, 'F', "Tom",   178.6   },
-////      { 29, 'M', "Tarou", 166.6   }
-////  };
-////  int length = sizeof(person_list) / sizeof(PersonalInformation);
-////  // the array of each length of multidimentional data.
-////  hsize_t dim[1];
-////  dim[0] = sizeof(person_list) / sizeof(PersonalInformation);
-////
-////  // the length of dim
-////  int rank = sizeof(dim) / sizeof(hsize_t);
-////
-////  // defining the datatype to pass HDF55
-////  H5::CompType mtype(sizeof(PersonalInformation));
-////  mtype.insertMember(member_voxel, HOFFSET(PersonalInformation, age), H5::PredType::NATIVE_INT);
-////  mtype.insertMember(member_tf, HOFFSET(PersonalInformation, height), H5::PredType::NATIVE_FLOAT);
-////
-////  // preparation of a dataset and a file.
-////  H5::DataSpace space(rank, dim);
-////  H5::H5File *file = new H5::H5File(FileName, H5F_ACC_TRUNC);
-////  H5::Group *group = new H5::Group(file->createGroup(GroupName, mtype, space));
-////  H5::DataSet *dataset = new H5::DataSet(group->createDataSet(DatasetName, mtype, space));
-////  // Write
-////  dataset->write(person_list, mtype);
-////
-////  delete dataset;
-////  delete group;
-////  delete file;
-//}
-
 int main (int argc, char** argv)
 {
   std::cout << "start!" << std::endl;
   std::cout << "now converting..." << std::endl;
-  std::cout << atoi(argv[1])+1 << std::endl;
   for(int n = 1; n < atoi(argv[1])+1; n++){
-    std::cout << n << std::endl;
+    std::cout << "n : " << n << std::endl;
     char coo[256] = {0};
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
@@ -302,13 +232,14 @@ int main (int argc, char** argv)
     ((arr[0]-min_x)/diff_max < 0) || ((arr[0]-min_x)/diff_max > 1) ||
     ((arr[1]-min_y)/diff_max < 0) || ((arr[1]-min_y)/diff_max > 1) ||
     ((arr[2]-min_z)/diff_max < 0) || ((arr[2]-min_z)/diff_max > 1)){
+      std::cout << "aaaaaaaaaaaaaa" << std::endl;
       continue;
     }
 
     float transed_tf[7] = {0};
     translation(min_x, min_y, min_z, diff_max, arr, transed_tf);
     m += 1;
-
+    std::cout << "m : " << m << std::endl;
 //    save_data(voxel, transed_tf);
 
 //    pcl::visualization::CloudViewer viewer("Cloud Viewer");

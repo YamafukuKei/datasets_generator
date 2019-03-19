@@ -10,7 +10,7 @@ import argparse
 ##from mpl_toolkits.mplot3d import Axes3D
 ##import matplotlib.pyplot as plt
 
-##from tqdm import tqdm
+from tqdm import tqdm
 ##import time
 ##from scipy import interpolate
 parser = argparse.ArgumentParser()
@@ -22,10 +22,10 @@ n_data = args.number
 div = 50
 div_num = div * div * div
 
-f_hdf5 = h5py.File('../cloud_pos_ori_4199.hdf5','w')
+f_hdf5 = h5py.File('../cloud_pos_ori_25000.hdf5','w')
 print("start converting")
-for i in range(n_data):
-    with open("./learn_data/tf_"+str(i+1)+".csv",'r') as f:
+for i in tqdm(range(1,n_data+1)):
+    with open("./learn_data/tf_"+str(i)+".csv",'r') as f:
         tf_csv = csv.reader(f)
         lines_tf = [e for e in tf_csv]
         tf = [0]*7
@@ -41,7 +41,7 @@ for i in range(n_data):
 ##    ax.set_ylabel("y")
 ##    ax.set_zlabel("z")
 
-    with open("./learn_data/voxel_"+str(i+1)+".csv",'r') as fi:
+    with open("./learn_data/voxel_"+str(i)+".csv",'r') as fi:
         voxel_csv = csv.reader(fi)
         lines_voxel = [e for e in voxel_csv]
         voxel = [0]*div_num
@@ -61,7 +61,7 @@ for i in range(n_data):
 ##        plt.show()
 ##    print(voxel.count(1))
 
-    data_group = f_hdf5.create_group("data_"+str(i+1))
+    data_group = f_hdf5.create_group("data_"+str(i))
 
     data_group.create_dataset("voxel", data=voxel, compression= "lzf")
     data_group.create_dataset("pos_ori", data=tf, compression= "lzf")
