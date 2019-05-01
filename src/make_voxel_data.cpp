@@ -115,7 +115,7 @@ void make_voxel(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, float resol)
   int point_x = cloud->points[n].x/resol;
   int point_y = cloud->points[n].y/resol;
   int point_z = cloud->points[n].z/resol;
-  voxel[(point_x*VOXEL_N*VOXEL_N) + (point_y*VOXEL_N) + point_z] = 1;
+  voxel[(point_z*VOXEL_N*VOXEL_N) + (point_y*VOXEL_N) + point_x] = 1;
   }
 }
 
@@ -182,6 +182,41 @@ int main (int argc, char** argv)
       diff_max = diff_z;
     }
 
+    // processing tf
+    char tf_file[100];
+
+    sprintf(tf_file, "tf_%d.csv", n);
+
+    std::ifstream ifs;  // ファイル読み取り用ストリーム
+    ifs.open(tf_file);
+    if(ifs.fail()){
+      std::cerr << "cannot open file_"<< n << "!!\n";
+      continue;
+    }
+    float arr[7] = {0};
+    for(int i=0 ; i<7 ; i++){
+      ifs.getline(coo,sizeof(coo));	// 一行読み込んで…
+      arr[i] = atof(coo);	// それを配列に格納
+    }
+    // for validation
+//    std::cout << min_x  << " : " <<  max_x << std::endl;
+//    std::cout << min_y  << " : " <<  max_y << std::endl;
+//    std::cout << min_z  << " : " <<  max_z << std::endl;
+//    std::cout << (arr[0]-min_x)/diff_max << std::endl;
+//    std::cout << (arr[1]-min_y)/diff_max << std::endl;
+//    std::cout << (arr[2]-min_z)/diff_max << std::endl;
+    if (
+    ((arr[0]-min_x)/diff_max < -0.2) || ((arr[0]-min_x)/diff_max > 1.2) ||
+    ((arr[1]-min_y)/diff_max < -0.2) || ((arr[1]-min_y)/diff_max > 1.2) ||
+    ((arr[2]-min_z)/diff_max < -0.2) || ((arr[2]-min_z)/diff_max > 1.2)){
+      continue;
+//      break;
+    }
+    float transed_tf[7] = {0};
+    translation(min_x, min_y, min_z, diff_max, arr, transed_tf);
+    std::cout << "m : " << m << std::endl;
+
+    // processing voxel
     for (size_t i = 0; i < cloud->points.size(); ++i)
     {
       normarized_cloud->points[i].x = (cloud->points[i].x - min_x)/diff_max;
@@ -201,8 +236,10 @@ int main (int argc, char** argv)
     //save voxel data
     char newfile[100];
     sprintf(newfile, "learn_data/voxel_%d.csv", m);
+
     FILE *fp;
     fp = fopen(newfile, "w");
+
     for(int i = 0; i < VOXEL_N; i++){
       for(int j = 0; j < VOXEL_N; j++){
         for(int k = 0; k < VOXEL_N; k++){
@@ -210,36 +247,9 @@ int main (int argc, char** argv)
         }
       }
     }
+
     fclose(fp);
-
-    // processing of tf
-    char tf_file[100];
-    sprintf(tf_file, "tf_%d.csv", n);
-    std::ifstream ifs;  // ファイル読み取り用ストリーム
-    ifs.open(tf_file);
-    if(ifs.fail()){
-      std::cerr << "cannot open file_"<< n << "!!\n";
-      continue;
-    }
-    float arr[7] = {0};
-    for(int i=0 ; i<7 ; i++){
-      ifs.getline(coo,sizeof(coo));	// 一行読み込んで…
-      arr[i] = atof(coo);	// それを配列に格納
-    }
-
-    // for validation
-    if (
-    ((arr[0]-min_x)/diff_max < 0) || ((arr[0]-min_x)/diff_max > 1) ||
-    ((arr[1]-min_y)/diff_max < 0) || ((arr[1]-min_y)/diff_max > 1) ||
-    ((arr[2]-min_z)/diff_max < 0) || ((arr[2]-min_z)/diff_max > 1)){
-      std::cout << "aaaaaaaaaaaaaa" << std::endl;
-      continue;
-    }
-
-    float transed_tf[7] = {0};
-    translation(min_x, min_y, min_z, diff_max, arr, transed_tf);
     m += 1;
-    std::cout << "m : " << m << std::endl;
 //    save_data(voxel, transed_tf);
 
 //    pcl::visualization::CloudViewer viewer("Cloud Viewer");
