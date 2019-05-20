@@ -52,8 +52,8 @@ def random_state_make():
     r = rospy.Rate(10) # hz
     pos.model_name = "kobject"
     while not rospy.is_shutdown():
-        pos.pose.position.x = random.uniform(0.5, -0.5)
-        pos.pose.position.y = random.uniform(0.4, -0.4)
+        pos.pose.position.x = random.uniform(0.45, 0)
+        pos.pose.position.y = random.uniform(0.3, -0.3)
         pos.pose.position.z = random.uniform(0.1, 0.5)
         ro = random.uniform(-3.14, 3.14)
         pi = random.uniform(-3.14, 3.14)
@@ -70,10 +70,13 @@ def random_state_make():
         ps.pose.position.x = cloud_from_camera.pose.position.x
         ps.pose.position.y = cloud_from_camera.pose.position.y
         ps.pose.position.z = cloud_from_camera.pose.position.z
-        ps.pose.orientation.x = cloud_from_camera.pose.orientation.x
-        ps.pose.orientation.y = cloud_from_camera.pose.orientation.y
-        ps.pose.orientation.z = cloud_from_camera.pose.orientation.z
-        ps.pose.orientation.w = cloud_from_camera.pose.orientation.w
+
+        euler = euler_from_quaternion((cloud_from_camera.pose.orientation.x, cloud_from_camera.pose.orientation.y, cloud_from_camera.pose.orientation.z, cloud_from_camera.pose.orientation.w))
+        ps.pose.orientation.x = euler[0]
+        ps.pose.orientation.y = euler[1]
+        ps.pose.orientation.z = euler[2]
+        ps.pose.orientation.w = 0
+
 ##        print(cloud_from_camera)
         pub1.publish(pos) ## world coordinate
         ps.header.stamp = rospy.Time.now()
