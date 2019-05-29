@@ -4,7 +4,6 @@
 #include <pcl/filters/voxel_grid.h>
 #include<Eigen/StdVector>
 #include <fstream>
-#include "H5Cpp.h"
 
 #define VOXEL_N 50
 #define FILE_N 50000

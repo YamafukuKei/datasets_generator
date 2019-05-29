@@ -19,7 +19,6 @@
 #include <iostream>
 #include <stdio.h>
 
-#include <opencv2/core/core.hpp>
 #include "tf/transform_broadcaster.h"
 #include "tf/transform_listener.h"
 
