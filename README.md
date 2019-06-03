@@ -55,7 +55,7 @@ roscd kinect_bringup/urdf/models
 rosrun gazebo_ros spawn_model -urdf -file kinect.urdf -model kinect 1 0 0.5 0 0.35 3.14
 rosrun kinect_bringup tf_camera.py world kinect 1 0 0.5 0 0.35 3.14
 ```
-select urdf you want to collect datasets
+select urdf you want to collect for datasets
 ```
 roscd kinect_bringup/urdf/models
 rosrun gazebo_ros spawn_model -urdf -file object.urdf -model kobject -x 0 -y 0 -z 0.05 -r 0.0 -p 0.582 -y 0.0
