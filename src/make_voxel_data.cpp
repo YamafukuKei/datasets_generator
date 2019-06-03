@@ -208,6 +208,7 @@ int main (int argc, char** argv)
     ((arr[0]-min_x)/diff_max < -0.2) || ((arr[0]-min_x)/diff_max > 1.2) ||
     ((arr[1]-min_y)/diff_max < -0.2) || ((arr[1]-min_y)/diff_max > 1.2) ||
     ((arr[2]-min_z)/diff_max < -0.2) || ((arr[2]-min_z)/diff_max > 1.2)){
+      std::cout << "origin position is out of vocel : " << n << std::endl;
       continue;
 //      break;
     }
