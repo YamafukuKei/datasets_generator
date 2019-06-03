@@ -64,8 +64,8 @@ rosrun gazebo_ros spawn_model -urdf -file object.urdf -model kobject -x 0 -y 0 -
 rosrun kinect_bringup random_move_euler.py
 ```
 ```
-roscd /kinect_bringup/data
-mkdir data1 || cd data1
+roscd kinect_bringup/data
+mkdir data1 ; cd data1
 rosrun kinect_bringup record_euler input:=/kinect/sd/points number_of_data
 ```
 make dataset(Normalized voxel and centroid) after record pcd files
