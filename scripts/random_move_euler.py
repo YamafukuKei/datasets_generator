@@ -1,7 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# based on https://github.com/ros-visualization/visualization_tutorials/blob/indigo-devel/interactive_marker_tutorials/scripts/basic_controls.py
-# and https://github.com/ros-visualization/visualization_tutorials/blob/indigo-devel/interactive_marker_tutorials/scripts/menu.py
 
 import sys
 import random
@@ -14,9 +12,11 @@ from gazebo_msgs.msg import *
 import tf2_ros
 import tf2_geometry_msgs
 from visualization_msgs.msg import Marker
+from time import sleep
 
+rospy.init_node("random_state_maker", anonymous=True)
 tf_buffer = tf2_ros.Buffer()
-tf_listner = tf2_ros.TransformListener(tf_buffer)
+tf_listener = tf2_ros.TransformListener(tf_buffer)
 
 def transform_3D_point_to_new_frame(xyz_point_from_sensor, from_frame_id):
     to_frame = "kinect_rgb_optical_frame"
@@ -44,6 +44,7 @@ def random_state_make():
     # TODO: Print here the commands
     # tf static transform
     print("now making random states of target object...")
+    sleep(0.1)
     pub1 = rospy.Publisher('/gazebo/set_model_state', ModelState, queue_size=1)
     pub2 = rospy.Publisher('/posestamped_obj', PoseStamped, queue_size=1)
 ##    marker_pub = rospy.Publisher("transferred_image_pixel", Marker, queue_size = 10)
@@ -87,7 +88,6 @@ def random_state_make():
         r.sleep()
 
 if __name__ == "__main__":
-    rospy.init_node("random_state_maker", anonymous=True)
     try:
         random_state_make()
 
