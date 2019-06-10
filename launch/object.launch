@@ -1,19 +1,20 @@
+<?xml version="1.0" ?>
 <launch>
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find kinect_bringup)/worlds/empty.world"/>
-  </include>
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="verbose" default="false"/>
 
-  <arg name="model" default="$(find kinect_bringup)/urdf/models/object.urdf" />
-  <arg name="gui" default="True" />
-  <param name="robot_description" textfile="$(arg model)" />
-  <param name="use_gui" value="$(arg gui)"/>
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <!-- Spawn the robot -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find kinect_bringup)/urdf/object.urdf.xacro'" />
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="30.0" />
+  </node>
 
-
-  <param name="robot_description" type="str" textfile="$(find kinect_bringup)/urdf/models/object.urdf"/>
-
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model object" />
-
+  <!-- RViz -->
+  <arg name="rviz" default="false"/>
+  <node if="$(arg rviz)" pkg="rviz" type="rviz" name="$(anon rviz)" respawn="false" output="screen" args="-d $(find kinect_bringup)/rviz/kinect_center.rviz" />
 
 </launch>
