@@ -306,7 +306,6 @@ class InteractiveMarkerPoseStampedPublisher():
         p = pi
         y = pi/2.0
         o = quaternion_from_euler(r, p, y)
-        opt_frame = self.to_frame + "_rgb_optical_frame"
 
         r = rospy.Rate(20)
         while not rospy.is_shutdown():
@@ -325,12 +324,6 @@ class InteractiveMarkerPoseStampedPublisher():
             ps.header.frame_id = self.from_frame
             ps.header.stamp = rospy.Time.now()
             self.pub.publish(ps)
-            br = tf.TransformBroadcaster()
-            br.sendTransform((0, 0, 0),
-                             o,
-                              rospy.Time.now(),
-                              opt_frame,
-                              self.to_frame)
             r.sleep()
 
 
