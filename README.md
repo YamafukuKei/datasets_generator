@@ -78,3 +78,10 @@ rosrun kinect_bringup make_voxel_data number_of_data
 roscd kinect_bringup/data/data1
 rosrun kinect_bringup from_csv2hdf.py -n number of dataset
 ```
+##  verification of precision
+```
+roslaunch kinect_bringup object.launch
+```
+```
+rosrun kinect_bringup tf_interactive_marker_object.py world object_origin 0.1 0.1 0.1 0 0 0
+```
