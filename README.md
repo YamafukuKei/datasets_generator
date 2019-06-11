@@ -85,3 +85,6 @@ roslaunch kinect_bringup object.launch
 ```
 rosrun kinect_bringup tf_interactive_marker_object.py world object_origin 0.1 0.1 0.1 0 0 0
 ```
+```
+rosrunf tf_echo estimated_tf object_origin
+```

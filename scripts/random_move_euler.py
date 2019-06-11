@@ -53,9 +53,9 @@ def random_state_make():
     r = rospy.Rate(11) # hz
     pos.model_name = "kobject"
     while not rospy.is_shutdown():
-        pos.pose.position.x = random.uniform(0.45, 0)
-        pos.pose.position.y = random.uniform(0.3, -0.3)
-        pos.pose.position.z = random.uniform(0.1, 0.5)
+        pos.pose.position.x = random.uniform(-0.2, 0.45)
+        pos.pose.position.y = random.uniform(0.35, -0.35)
+        pos.pose.position.z = random.uniform(0.1, 0.4)
         ro = random.uniform(-3.14, 3.14)
         pi = random.uniform(-3.14, 3.14)
         ya = random.uniform(-3.14, 3.14)

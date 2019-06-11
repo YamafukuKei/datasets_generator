@@ -145,7 +145,7 @@ int main (int argc, char** argv)
   std::cout << "start!" << std::endl;
   std::cout << "now converting..." << std::endl;
   for(int n = 1; n < atoi(argv[1])+1; n++){
-    std::cout << "n : " << n << std::endl;
+//    std::cout << "n : " << n << std::endl;
     char coo[256] = {0};
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
@@ -214,7 +214,7 @@ int main (int argc, char** argv)
     }
     float transed_tf[7] = {0};
     translation(min_x, min_y, min_z, diff_max, arr, transed_tf);
-    std::cout << "m : " << m << std::endl;
+//    std::cout << "m : " << m << std::endl;
 
     // processing voxel
     for (size_t i = 0; i < cloud->points.size(); ++i)
