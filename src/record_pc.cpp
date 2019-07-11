@@ -1,4 +1,4 @@
-// Merge point cloud and grayscale image acquired by phoxi. And save the colored cloud as pcd data
+// Save the cloud as pcd data
 
 #include <ros/ros.h>
 #include <ros/package.h>
@@ -27,8 +27,8 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& source)
   pcl::fromROSMsg(*source, *model_cloud);
 
   try{
-    tf_listener.waitForTransform("/world", "/map", ros::Time(0), ros::Duration(10.0));
-    tf_listener.lookupTransform("/world", "/map", ros::Time(0), trans_model);
+    tf_listener.waitForTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), ros::Duration(10.0));
+    tf_listener.lookupTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), trans_model);
     Eigen::Matrix4f eigen_transform;
     pcl_ros::transformAsMatrix(trans_model, eigen_transform);
     Eigen::Affine3f eigen_affine_transform(eigen_transform);
@@ -37,11 +37,10 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& source)
     ROS_ERROR("%s", ex.what());
   }
 
-  std::cout << "ROS_time(record_cloud) : " << ros::Time::now() << std::endl;
-  std::string filename = "cloud.pcd";
+  std::string model_filename = "cloud.pcd";
 
-  pcl::io::savePCDFileASCII (filename, *converted_model);
-  std::cout << "save " << filename << std::endl;
+  pcl::io::savePCDFileASCII (model_filepath + model_filename, *converted_model);
+  std::cout << "save " << model_filename << std::endl;
 
 }
 
@@ -52,7 +51,7 @@ main (int argc, char** argv)
   ros::init (argc, argv, "pcd_record");
   ros::NodeHandle nh;
 
-  ros::Subscriber sub1 = nh.subscribe("input", 1, cloud_cb);
+  ros::Subscriber sub1 = nh.subscribe("/kinect/hd/points", 1, cloud_cb);
 
   ros::Rate loop_rate(1000);
   while (ros::ok()){
