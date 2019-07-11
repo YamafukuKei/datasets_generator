@@ -60,8 +60,13 @@ select urdf you want to collect for datasets
 roscd kinect_bringup/urdf/models
 rosrun gazebo_ros spawn_model -urdf -file object.urdf -model kobject -x 0 -y 0 -z 0.05 -r 0.0 -p 0.582 -y 0.0
 ```
+generate object pose
 ```
 rosrun kinect_bringup random_move_euler.py
+```
+or
+```
+rosrun kinect_bringup tf_state_publisher.py world kobject 0.1 0.1 0.1 0 0 0
 ```
 ```
 roscd kinect_bringup/data
