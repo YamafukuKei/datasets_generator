@@ -15,9 +15,12 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_ros
   sensor_msgs
   geometry_msgs
-
+  cv_bridge
+  image_transport
 )
 
+find_package(OpenCV REQUIRED
+)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -210,3 +213,8 @@ add_executable(record_obs src/record_obs.cpp)
 target_link_libraries(record_obs  ${catkin_LIBRARIES})
 add_executable(record_euler src/record_euler.cpp)
 target_link_libraries(record_euler  ${catkin_LIBRARIES})
+add_executable(combine_img_pc src/combine_img_pc.cpp)
+target_link_libraries(combine_img_pc  ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_executable(record_pc src/record_pc.cpp)
+target_link_libraries(record_pc  ${catkin_LIBRARIES})
+
