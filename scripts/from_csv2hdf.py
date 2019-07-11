@@ -16,10 +16,14 @@ from tqdm import tqdm
 parser = argparse.ArgumentParser()
 parser.add_argument('--number', '-n', default=4199, type=int, #default=-1
                     help='the number of files (negative value indicates CPU)')
+parser.add_argument('--division', '-d', default=50, type=int, #default=-1
+                    help='the number of files (negative value indicates CPU)')
+
 args = parser.parse_args()
 n_data = args.number
+division = args.division
 
-div = 50
+div = division
 div_num = div * div * div
 
 f_hdf5 = h5py.File('../cloud_pos_ori_25000.hdf5','w')
@@ -64,6 +68,6 @@ for i in tqdm(range(1,n_data+1)):
     data_group = f_hdf5.create_group("data_"+str(i))
 
     data_group.create_dataset("voxel", data=voxel, compression= "lzf")
-    data_group.create_dataset("pos_ori", data=tf, compression= "lzf")
+    data_group.create_dataset("pose", data=tf, compression= "lzf")
 
 print("finish !!")
