@@ -5,7 +5,7 @@
 #include<Eigen/StdVector>
 #include <fstream>
 
-#define VOXEL_N 50
+#define VOXEL_N 70
 #define FILE_N 50000
 
 const std::string FileName("voxel_pos_ori_25000.hdf5");
@@ -214,7 +214,7 @@ int main (int argc, char** argv)
     }
     float transed_tf[7] = {0};
     translation(min_x, min_y, min_z, diff_max, arr, transed_tf);
-//    std::cout << "m : " << m << std::endl;
+    std::cout << "m : " << m << std::endl;
 
     // processing voxel
     for (size_t i = 0; i < cloud->points.size(); ++i)
