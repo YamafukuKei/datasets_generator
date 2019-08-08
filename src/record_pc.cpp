@@ -1,4 +1,4 @@
-// Save the cloud as pcd data
+// Save the point cloud to pcd in world coordinate system
 
 #include <ros/ros.h>
 #include <ros/package.h>
