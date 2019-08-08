@@ -217,4 +217,5 @@ add_executable(combine_img_pc src/combine_img_pc.cpp)
 target_link_libraries(combine_img_pc  ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_executable(record_pc src/record_pc.cpp)
 target_link_libraries(record_pc  ${catkin_LIBRARIES})
-
+add_executable(normalize_pc src/normalize_pc.cpp)
+target_link_libraries(normalize_pc  ${catkin_LIBRARIES})
