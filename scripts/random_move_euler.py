@@ -50,10 +50,13 @@ def random_state_make():
 ##    marker_pub = rospy.Publisher("transferred_image_pixel", Marker, queue_size = 10)
     pos = ModelState()
     ps = PoseStamped()
-    r = rospy.Rate(11) # hz
+    r = rospy.Rate(9) # hz
     pos.model_name = "kobject"
+    ramda_x = 0
+    ramda_y = 0
+    ramda_z = 0
     while not rospy.is_shutdown():
-        pos.pose.position.x = random.uniform(-0.2, 0.45)
+        pos.pose.position.x = random.uniform(-0.2, 0.0) ##(-0.2, 0.45)
         pos.pose.position.y = random.uniform(0.35, -0.35)
         pos.pose.position.z = random.uniform(0.1, 0.4)
         ro = random.uniform(-3.14, 3.14)

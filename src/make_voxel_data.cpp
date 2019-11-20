@@ -5,7 +5,7 @@
 #include<Eigen/StdVector>
 #include <fstream>
 
-#define VOXEL_N 70
+#define VOXEL_N 50
 #define FILE_N 50000
 
 const std::string FileName("voxel_pos_ori_25000.hdf5");
