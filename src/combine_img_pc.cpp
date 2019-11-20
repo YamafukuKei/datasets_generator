@@ -100,9 +100,9 @@ main (int argc, char** argv)
   ros::NodeHandle nh;
 
   pub = nh.advertise<sensor_msgs::PointCloud2>("/colored_pc", 1);
-  ros::Subscriber sub1 = nh.subscribe("/phoxi_camera/pointcloud", 1, cloud_cb);
+  ros::Subscriber sub1 = nh.subscribe("/photoneo_center/pointcloud", 1, cloud_cb);
   image_transport::ImageTransport it(nh);
-  image_transport::Subscriber image_sub = it.subscribe("/phoxi_camera/texture", 1, image_cb);
+  image_transport::Subscriber image_sub = it.subscribe("/photoneo_center/texture", 1, image_cb);
 
   ros::Rate loop_rate(1000);
   while (ros::ok()){
