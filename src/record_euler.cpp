@@ -29,6 +29,7 @@
 typedef pcl::PointCloud<pcl::PointXYZRGBA> Cloud;
 int t = 0;
 int count = 0;
+int flag = 0;
 
 ros::Publisher pub;
 
@@ -104,34 +105,40 @@ pose_cb (const geometry_msgs::PoseStampedConstPtr& pose)
 {
   if (count == 0)
   {
-  poseobj.pos_x = pose->pose.position.x;
-  poseobj.pos_y = pose->pose.position.y;
-  poseobj.pos_z = pose->pose.position.z;
+    poseobj.pos_x = pose->pose.position.x;
+    poseobj.pos_y = pose->pose.position.y;
+    poseobj.pos_z = pose->pose.position.z;
 
-  poseobj.ori_x = pose->pose.orientation.x;
-  poseobj.ori_y = pose->pose.orientation.y;
-  poseobj.ori_z = pose->pose.orientation.z;
-  poseobj.ori_w = pose->pose.orientation.w;
+    poseobj.ori_x = pose->pose.orientation.x;
+    poseobj.ori_y = pose->pose.orientation.y;
+    poseobj.ori_z = pose->pose.orientation.z;
+    poseobj.ori_w = pose->pose.orientation.w;
 
-  poseobj.time = pose->header.stamp;
-
-  count = 1;
+    poseobj.time = pose->header.stamp;
+    count = 1;
   }
+
+  if(poseobj.ori_w == 1)
+  {
+    flag = 1;
+  }
+
 }
 
 void
 cloud_cb (const sensor_msgs::PointCloud2ConstPtr& sensor_cloud)
 {
   // 実験によりoffsetの値を算出
-  double offset1 = 0.02;
-  double offset2 = 0.08;
+  double offset1 = 0.02; //sd,qhd = 8hz->0.02, qhd = 2.5hz->0.12
+  double offset2 = 0.08; //sd,qhd = 8hz->0.08, qhd = 2.5hz->0.25
 
-  if (count == 1 && poseobj.time + ros::Duration(offset1) < sensor_cloud->header.stamp && poseobj.time + ros::Duration(offset2) > sensor_cloud->header.stamp)
+  if (count == 1 && poseobj.time + ros::Duration(offset1) < sensor_cloud->header.stamp
+                 && poseobj.time + ros::Duration(offset2) > sensor_cloud->header.stamp)
   {
     count = 0;
     t += 1;
+    ros::Time t_start = ros::Time::now();
     get_tf();
-    std::cout << "ROS_time(record_cloud) : " << ros::Time::now() << std::endl;
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg (*sensor_cloud, *cloud);
 
@@ -146,36 +153,39 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& sensor_cloud)
     std::vector<int> mapping;
     pcl::removeNaNFromPointCloud(*cloud, *cloud, mapping);
 
-    //segmentation 平面除去
-    pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
-    pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
-
-    pcl::SACSegmentation<pcl::PointXYZ> seg;
-    // Optional
-    seg.setOptimizeCoefficients (true);
-    // Mandatory
-    seg.setModelType (pcl::SACMODEL_PLANE);
-    seg.setMethodType (pcl::SAC_RANSAC);
-
-    double dist_th = 0.02;
-    seg.setDistanceThreshold (dist_th);
-    seg.setInputCloud (cloud);
-    seg.segment (*inliers, *coefficients);
-
-    pcl::ExtractIndices<pcl::PointXYZ> extract;
-    extract.setInputCloud(cloud);
-    extract.setIndices(inliers);
-    extract.setNegative(true);
-    extract.filter(*cloud_filtered);
+    // //segmentation 平面除去
+    // pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+    // pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+    //
+    // pcl::SACSegmentation<pcl::PointXYZ> seg;
+    // // Optional
+    // seg.setOptimizeCoefficients (true);
+    // // Mandatory
+    // seg.setModelType (pcl::SACMODEL_PLANE);
+    // seg.setMethodType (pcl::SAC_RANSAC);
+    //
+    // double dist_th = 0.02;
+    // seg.setDistanceThreshold (dist_th);
+    // seg.setInputCloud (cloud);
+    // seg.segment (*inliers, *coefficients);
+    //
+    // pcl::ExtractIndices<pcl::PointXYZ> extract;
+    // extract.setInputCloud(cloud);
+    // extract.setIndices(inliers);
+    // extract.setNegative(true);
+    // extract.filter(*cloud_filtered);
 
     std::stringstream ss;
     ss << t;
     std::string filename = "cloud_" + ss.str() + ".pcd";
 
-    pcl::io::savePCDFileASCII (filename, *cloud_filtered);
-  //  std::cout << filename << std::endl;
-  //  std::cerr << "Saved " << cloud_filtered->points.size () << " data points to save.pcd." << std::endl;
-  }else if (poseobj.time + ros::Duration(offset2) < sensor_cloud->header.stamp)
+    // pcl::io::savePCDFileASCII (filename, *cloud_filtered);
+    pcl::io::savePCDFileASCII (filename, *cloud);
+
+    ros::Time t_end = ros::Time::now();
+    std::cout << "ROS_time(record_cloud) : " << t_end-t_start << std::endl;
+  }
+  else if (poseobj.time + ros::Duration(offset2) < sensor_cloud->header.stamp)
   {
     count = 0;
   }
@@ -199,11 +209,15 @@ main (int argc, char** argv)
   ros::Subscriber sub1 = nh.subscribe("input", 1, cloud_cb);
   ros::Subscriber sub2 = nh.subscribe("/posestamped_obj", 1, pose_cb);
 
-  ros::Rate loop_rate(1000);
+//  ros::Rate loop_rate(1000);
   while (ros::ok()){
     ros::spinOnce();
-    loop_rate.sleep();
+//    loop_rate.sleep();
     if (t == max_data)
+    {
+      flag = 1;
+    }
+    if (flag == 1)
     {
       break;
     }
