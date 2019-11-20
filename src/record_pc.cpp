@@ -26,20 +26,22 @@ cloud_cb (const sensor_msgs::PointCloud2ConstPtr& source)
   pcl::PointCloud<pcl::PointXYZRGBA>::Ptr converted_model (new pcl::PointCloud<pcl::PointXYZRGBA> ());
   pcl::fromROSMsg(*source, *model_cloud);
 
-  try{
-    tf_listener.waitForTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), ros::Duration(10.0));
-    tf_listener.lookupTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), trans_model);
-    Eigen::Matrix4f eigen_transform;
-    pcl_ros::transformAsMatrix(trans_model, eigen_transform);
-    Eigen::Affine3f eigen_affine_transform(eigen_transform);
-    pcl::transformPointCloud(*model_cloud, *converted_model, eigen_affine_transform);
-  }catch(tf::TransformException ex){
-    ROS_ERROR("%s", ex.what());
-  }
+  // transfomation of coordinate
+  // try{
+  //   tf_listener.waitForTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), ros::Duration(10.0));
+  //   tf_listener.lookupTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), trans_model);
+  //   Eigen::Matrix4f eigen_transform;
+  //   pcl_ros::transformAsMatrix(trans_model, eigen_transform);
+  //   Eigen::Affine3f eigen_affine_transform(eigen_transform);
+  //   pcl::transformPointCloud(*model_cloud, *converted_model, eigen_affine_transform);
+  // }catch(tf::TransformException ex){
+  //   ROS_ERROR("%s", ex.what());
+  // }
 
   std::string model_filename = "cloud.pcd";
 
-  pcl::io::savePCDFileASCII (model_filepath + model_filename, *converted_model);
+  // pcl::io::savePCDFileASCII (model_filepath + model_filename, *converted_model);
+  pcl::io::savePCDFileASCII (model_filepath + model_filename, *model_cloud);
   std::cout << "save " << model_filename << std::endl;
 
 }
@@ -51,7 +53,8 @@ main (int argc, char** argv)
   ros::init (argc, argv, "pcd_record");
   ros::NodeHandle nh;
 
-  ros::Subscriber sub1 = nh.subscribe("/kinect/hd/points", 1, cloud_cb);
+  // ros::Subscriber sub1 = nh.subscribe("/kinect/hd/points", 1, cloud_cb);
+  ros::Subscriber sub1 = nh.subscribe("/photoneo_test/pointcloud", 1, cloud_cb);
 
   ros::Rate loop_rate(1000);
   while (ros::ok()){
