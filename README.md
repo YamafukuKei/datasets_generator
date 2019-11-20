@@ -23,13 +23,12 @@ roslaunch kinect2_bridge kinect2_bridge.launch base_name:=kinect_center depth_me
 ```
 rosrun kinect_bringup tf_interactive_marker.py world kinect_test 1.4784 0.0693 0.4358 0.046 0.4315 -3.1227
 ```
-##  dataset generate
+#  USAGE(dataset generator)
+1.launch gazebo and rviz
 ```
 roslaunch gazebo_ros empty_world.launch
 ```
-```
-rviz
-```
+2.turn on gravity on gazebo
 ```
 rosservice call /gazebo/set_physics_properties "
 time_step: 0.001
@@ -50,17 +49,18 @@ ode_config:
   erp: 0.2
   max_contacts: 20"
 ```
+3.spown the sensor on gazebo and rviz
 ```
 roscd kinect_bringup/urdf/models
 rosrun gazebo_ros spawn_model -urdf -file kinect.urdf -model kinect 1 0 0.5 0 0.35 3.14
 rosrun kinect_bringup tf_camera.py world kinect 1 0 0.5 0 0.35 3.14
 ```
-select urdf you want to collect for datasets
+4.spown target object you want to collect for datasets
 ```
 roscd kinect_bringup/urdf/models
 rosrun gazebo_ros spawn_model -urdf -file object.urdf -model kobject -x 0 -y 0 -z 0.05 -r 0.0 -p 0.582 -y 0.0
 ```
-generate object pose
+5.generating object pose automatically
 ```
 rosrun kinect_bringup random_move_euler.py
 ```
@@ -68,17 +68,19 @@ or
 ```
 rosrun kinect_bringup tf_state_publisher.py world kobject 0.1 0.1 0.1 0 0 0
 ```
+6.record object's point cloud and pose
 ```
 roscd kinect_bringup/data
 mkdir data1 ; cd data1
 mkdir learn_data
 rosrun kinect_bringup record_euler input:=/kinect/sd/points number_of_data
 ```
-make dataset(Normalized voxel and centroid) after record pcd files
+7.normalizing point cloud and make voxel
 ```
 roscd kinect_bringup/data/data1
 rosrun kinect_bringup make_voxel_data number_of_data
 ```
+8.save dataset in hdf5 format
 ```
 roscd kinect_bringup/data/data1
 rosrun kinect_bringup from_csv2hdf.py -n number of dataset
