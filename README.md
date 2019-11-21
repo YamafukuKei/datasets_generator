@@ -26,7 +26,7 @@ rosrun kinect_bringup tf_interactive_marker.py world kinect_test 1.4784 0.0693 0
 #  USAGE(dataset generator)
 1.launch gazebo and rviz
 ```
-roslaunch gazebo_ros empty_world.launch
+roslaunch kinect_bringup empty_world.launch
 ```
 2.turn on gravity on gazebo
 ```
