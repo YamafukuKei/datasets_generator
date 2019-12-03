@@ -157,12 +157,13 @@ int main (int argc, char** argv)
     pcl::io::loadPCDFile(filename, *cloud);
     pcl::io::loadPCDFile(filename, *normarized_cloud);
 
-    float max_x = Min_Max(cloud).max_x + 0.02;
-    float max_y = Min_Max(cloud).max_y + 0.02;
-    float max_z = Min_Max(cloud).max_z + 0.02;
-    float min_x = Min_Max(cloud).min_x - 0.02;
-    float min_y = Min_Max(cloud).min_y - 0.02;
-    float min_z = Min_Max(cloud).min_z - 0.02;
+    float offset = 0.02;
+    float max_x = Min_Max(cloud).max_x + offset;
+    float max_y = Min_Max(cloud).max_y + offset;
+    float max_z = Min_Max(cloud).max_z + offset;
+    float min_x = Min_Max(cloud).min_x - offset;
+    float min_y = Min_Max(cloud).min_y - offset;
+    float min_z = Min_Max(cloud).min_z - offset;
 
     float diff_x = max_x - min_x;
     float diff_y = max_y - min_y;
