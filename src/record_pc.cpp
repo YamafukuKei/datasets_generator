@@ -53,8 +53,8 @@ main (int argc, char** argv)
   ros::init (argc, argv, "pcd_record");
   ros::NodeHandle nh;
 
-  // ros::Subscriber sub1 = nh.subscribe("/kinect/hd/points", 1, cloud_cb);
-  ros::Subscriber sub1 = nh.subscribe("/photoneo_test/pointcloud", 1, cloud_cb);
+  ros::Subscriber sub1 = nh.subscribe("/kinect/hd/points", 1, cloud_cb);
+  // ros::Subscriber sub1 = nh.subscribe("/photoneo_test/pointcloud", 1, cloud_cb);
 
   ros::Rate loop_rate(1000);
   while (ros::ok()){
