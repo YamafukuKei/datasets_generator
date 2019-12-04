@@ -33,9 +33,8 @@
   <link name="kinect_rgb_optical_frame"/>
   <!-- <!-\- Joint -\-> -->
   <joint name="joint_kinect" type="fixed">
-    <!-- <origin xyz="0.8872 -0.6445 0.5718" rpy="-0.0087 0.5501 2.0698" /> -->
-      <origin xyz="1.0 0.0 0.5" rpy="0.0 0.35 -3.14" />
-      <!-- <origin xyz="0.1 0.0 0.5" rpy="0.0 1.9 0.0" /> -->
+      <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+      <!--  <origin xyz="1.0 0.0 0.5" rpy="0.0 0.35 3.14" /> -->
     <parent link="camera_link"/>
     <child link="kinect_link"/>
   </joint>

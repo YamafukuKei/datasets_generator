@@ -10,7 +10,7 @@
     <collision>
       <origin xyz="0 0 0"/>
       <geometry>
-        <box size="0.065 0.25 0.082"/>
+        <mesh filename="package://kinect_bringup/meshes/HV8.STL"/>
       </geometry>
     </collision>
     <inertial>
