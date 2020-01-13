@@ -5,6 +5,7 @@
 
 #include "pcl_ros/transforms.h"
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl/visualization/cloud_viewer.h>
 #include <string>
 #include <sstream>
 
@@ -15,50 +16,90 @@
 std::string model_filepath = ros::package::getPath("kinect_bringup") + "/pcds/";
 std::string model_filename;
 
-void
-cloud_cb (const sensor_msgs::PointCloud2ConstPtr& source)
+class RecordCloud
 {
-  tf::TransformListener tf_listener;
-  tf::StampedTransform trans_model;
+public:
+  RecordCloud(ros::NodeHandle nh);
+  void cloud_cb(const sensor_msgs::PointCloud2ConstPtr& source);
+  void run();
 
-  sensor_msgs::PointCloud2 converted_cloud;
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr model_cloud (new pcl::PointCloud<pcl::PointXYZRGBA> ());
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr converted_model (new pcl::PointCloud<pcl::PointXYZRGBA> ());
-  pcl::fromROSMsg(*source, *model_cloud);
+private:
+  ros::NodeHandle nh_;
+  tf::TransformListener tf_listener_;
+  ros::Subscriber sub1_;
 
-  // transfomation of coordinate
-  // try{
-  //   tf_listener.waitForTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), ros::Duration(10.0));
-  //   tf_listener.lookupTransform("/world", "/kinect_rgb_optical_frame", ros::Time(0), trans_model);
-  //   Eigen::Matrix4f eigen_transform;
-  //   pcl_ros::transformAsMatrix(trans_model, eigen_transform);
-  //   Eigen::Affine3f eigen_affine_transform(eigen_transform);
-  //   pcl::transformPointCloud(*model_cloud, *converted_model, eigen_affine_transform);
-  // }catch(tf::TransformException ex){
-  //   ROS_ERROR("%s", ex.what());
-  // }
+  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr model_cloud;
+  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr converted_model;
+};
 
-  std::string model_filename = "cloud.pcd";
-
-  // pcl::io::savePCDFileASCII (model_filepath + model_filename, *converted_model);
-  pcl::io::savePCDFileASCII (model_filepath + model_filename, *model_cloud);
-  std::cout << "save " << model_filename << std::endl;
-
+RecordCloud::RecordCloud(ros::NodeHandle nh)
+  :nh_(nh)
+  ,model_cloud (new pcl::PointCloud<pcl::PointXYZRGBA> ())
+  ,converted_model (new pcl::PointCloud<pcl::PointXYZRGBA> ())
+{
+  sub1_ = nh_.subscribe("/kinect/hd/points", 1, &RecordCloud::cloud_cb, this);
 }
 
-int
-main (int argc, char** argv)
+void RecordCloud::cloud_cb (const sensor_msgs::PointCloud2ConstPtr& source)
 {
-  int max_data = atoi(argv[2]);
+  tf::StampedTransform trans_model;
+  ros::Duration(1.0).sleep();
+
+  sensor_msgs::PointCloud2 transformed_cloud_msg;
+  //transfomation of coordinate
+  // try{
+  std::string sensor_frame_id = source->header.frame_id;
+  std::cout << "sensor_frame : " << sensor_frame_id << std::endl;
+
+
+  try
+  {
+    ros::Time t = ros::Time(0);
+    tf_listener_.waitForTransform("/world", sensor_frame_id, t, ros::Duration(1.0));
+    pcl_ros::transformPointCloud("world", *source, transformed_cloud_msg, tf_listener_);
+  }
+  catch (tf::ExtrapolationException e)
+  {
+    ROS_ERROR("pcl_ros::transformPointCloud %s", e.what());
+  }
+  pcl::fromROSMsg(transformed_cloud_msg, *converted_model);
+  // pcl::fromROSMsg(*source, *converted_model);
+
+  // pcl::visualization::CloudViewer viewer("Cloud Viewer");
+  // viewer.showCloud(converted_model);
+  // while (!viewer.wasStopped ())
+  //     {
+  //     }
+
+
+  std::cout << "point cloud size : " << converted_model->points.size() << std::endl;
+  if (converted_model->points.size()>0)
+  {
+    model_filename = "cloud.pcd";
+    pcl::io::savePCDFileASCII (model_filepath + model_filename, *converted_model);
+    std::cout << "save " << model_filename << std::endl;
+  }
+}
+
+void RecordCloud::run()
+{
+  while (nh_.ok())
+  {
+    ros::spinOnce();
+  }
+}
+
+int main (int argc, char** argv)
+{
   ros::init (argc, argv, "pcd_record");
   ros::NodeHandle nh;
 
-  ros::Subscriber sub1 = nh.subscribe("/kinect/hd/points", 1, cloud_cb);
-  // ros::Subscriber sub1 = nh.subscribe("/photoneo_test/pointcloud", 1, cloud_cb);
+  RecordCloud record(nh);
+  record.run();
+  // ros::Subscriber sub1 = nh.subscribe("/kinect/hd/points", 1, cloud_cb);
 
-  ros::Rate loop_rate(1000);
-  while (ros::ok()){
-    ros::spinOnce();
-  }
+  // while (ros::ok()){
+  //   ros::spinOnce();
+  // }
 
 }
