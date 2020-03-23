@@ -28,6 +28,7 @@ rosrun kinect_bringup tf_interactive_marker.py world kinect_test 1.4784 0.0693 0
 ```
 roslaunch kinect_bringup empty_world.launch
 ```
+1.5. delete ground plane (manual)
 2.turn on gravity on gazebo
 ```
 rosservice call /gazebo/set_physics_properties "
