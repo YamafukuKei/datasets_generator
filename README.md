@@ -106,8 +106,7 @@ rosrun tf tf_echo estimated_tf object_origin
 roslaunch kinect_bringup empty_world.launch
 ```
 1.5. delete ground plane (manual)
-```
-```
+
 2.turn on gravity on gazebo
 ```
 rosservice call /gazebo/set_physics_properties "
