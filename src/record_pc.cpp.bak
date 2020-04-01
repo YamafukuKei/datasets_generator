@@ -13,7 +13,7 @@
 #include <iostream>
 #include <stdio.h>
 
-std::string model_filepath = ros::package::getPath("datasets_generator") + "/pcds/";
+std::string model_filepath = ros::package::getPath("kinect_bringup") + "/pcds/";
 std::string model_filename;
 
 class RecordCloud

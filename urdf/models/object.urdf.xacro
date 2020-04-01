@@ -5,7 +5,7 @@
     <link name="${name}">
       <visual>
         <geometry>
-          <mesh filename="package://kinect_bringup/meshes/HV6.stl"/>
+          <mesh filename="package://datasets_generator/meshes/HV6.stl"/>
         </geometry>
         <material name="red"/>
       </visual>

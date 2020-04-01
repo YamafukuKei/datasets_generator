@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-<xacro:macro name="kinect2_link_box_v0" params="name">
+<xacro:macro name="object_link_box_v0" params="name">
     <link name="${name}">
       <visual>
-		<material name="black"/>
         <geometry>
-          <mesh filename="package://datasets_generator/meshes/kinectv2.stl"/>
+          <mesh filename="package://kinect_bringup/meshes/HV6.stl"/>
         </geometry>
+        <material name="red"/>
       </visual>
       <collision>
 		<origin xyz="0 0 0.041"/>

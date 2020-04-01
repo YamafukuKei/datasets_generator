@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <robot name="teaching_base" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find datasets_generator)/urdf/common.xacro" />
-  <xacro:include filename="$(find datasets_generator)/urdf/sensor/kinect.urdf.xacro"/>
-  <xacro:include filename="$(find datasets_generator)/urdf/sensor/kinect.gazebo.xacro"/>
+  <xacro:include filename="$(find kinect_bringup)/urdf/common.xacro" />
+  <xacro:include filename="$(find kinect_bringup)/urdf/sensor/kinect.urdf.xacro"/>
+  <xacro:include filename="$(find kinect_bringup)/urdf/sensor/kinect.gazebo.xacro"/>
 
   <link name="world"/>
 

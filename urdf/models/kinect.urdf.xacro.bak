@@ -2,8 +2,8 @@
 <!-- <robot name="sia5" xmlns:xacro="http://ros.org/wiki/xacro"> -->
 <robot name="camera" xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body" xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"  xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor" xmlns:xacro="http://ros.org/wiki/xacro">
   <!-- File Include -->
-  <xacro:include filename="$(find datasets_generator)/urdf/sensor/kinect.urdf.xacro"/>
-  <xacro:include filename="$(find datasets_generator)/urdf/sensor/kinect.gazebo.xacro"/>
+  <xacro:include filename="$(find kinect_bringup)/urdf/sensor/kinect.urdf.xacro"/>
+  <xacro:include filename="$(find kinect_bringup)/urdf/sensor/kinect.gazebo.xacro"/>
 
   <link name="camera_link">
     <inertial>

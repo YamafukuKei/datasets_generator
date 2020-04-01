@@ -1,19 +1,60 @@
-<?xml version="1.0"?>
-<robot xmlns:xacro="http://ros.org/wiki/xacro">
-
-  <xacro:include filename="$(find datasets_generator)/urdf/common.xacro" />
-
-  <xacro:macro name="kinect_gazebo" params="name">
-    <gazebo reference="${name}_link">
-      <mu1>0.2</mu1>
-      <mu2>0.2</mu2>
-      <material>Gazebo/Black</material>
-      <!-- hd -->
-      <sensor type="depth" name="${name}">
-        <always_on>true</always_on>
-        <update_rate>30.0</update_rate>
-        <camera>
-          <horizontal_fov>${84.1*M_PI/180.0}</horizontal_fov>
+<sdf version='1.6'>
+  <model name='camera'>
+    <link name='camera_link'>
+      <pose frame=''>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <mass>1.935</mass>
+        <inertia>
+          <ixx>0.105394</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.100853</iyy>
+          <iyz>0</iyz>
+          <izz>0.105199</izz>
+        </inertia>
+      </inertial>
+      <collision name='camera_link_fixed_joint_lump__kinect_link_collision'>
+        <pose frame=''>0 0 0.041 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.065 0.25 0.082</size>
+          </box>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='camera_link_fixed_joint_lump__kinect_link_visual'>
+        <pose frame=''>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://kinect_bringup/meshes/kinectv2.stl</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Black</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <gravity>0</gravity>
+      <velocity_decay/>
+      <sensor name='kinect' type='depth'>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <camera name='__default__'>
+          <horizontal_fov>1.46782</horizontal_fov>
           <image>
             <format>B8G8R8</format>
             <width>512</width>
@@ -25,12 +66,12 @@
           </clip>
           <noise>
             <type>gaussian</type>
-            <mean>0.0</mean>
+            <mean>0</mean>
             <stddev>0.005</stddev>
           </noise>
         </camera>
-        <plugin name="${name}_camera_controller" filename="libgazebo_ros_openni_kinect.so">
-          <cameraName>${name}/hd</cameraName>
+        <plugin name='kinect_camera_controller' filename='libgazebo_ros_openni_kinect.so'>
+          <cameraName>kinect/hd</cameraName>
           <alwaysOn>true</alwaysOn>
           <updateRate>30</updateRate>
           <imageTopicName>image_color</imageTopicName>
@@ -38,7 +79,7 @@
           <pointCloudTopicName>points</pointCloudTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <depthImageCameraInfoTopicName>camera_info</depthImageCameraInfoTopicName>
-          <frameName>${name}_rgb_optical_frame</frameName>
+          <frameName>kinect_rgb_optical_frame</frameName>
           <baseline>0.1</baseline>
           <distortion_k1>0.0</distortion_k1>
           <distortion_k2>0.0</distortion_k2>
@@ -48,14 +89,13 @@
           <pointCloudCutoff>0.05</pointCloudCutoff>
           <pointCloudCutoffMax>4.5</pointCloudCutoffMax>
         </plugin>
+        <pose frame=''>0 0 0 0 -0 0</pose>
       </sensor>
-
-      <!-- qhd -->
-      <sensor type="depth" name="${name}">
-        <always_on>true</always_on>
-        <update_rate>30.0</update_rate>
-        <camera>
-          <horizontal_fov>${84.1*M_PI/180.0}</horizontal_fov>
+      <sensor name='kinect' type='depth'>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <camera name='__default__'>
+          <horizontal_fov>1.46782</horizontal_fov>
           <image>
             <format>B8G8R8</format>
             <width>512</width>
@@ -67,12 +107,12 @@
           </clip>
           <noise>
             <type>gaussian</type>
-            <mean>0.0</mean>
+            <mean>0</mean>
             <stddev>0.005</stddev>
           </noise>
         </camera>
-        <plugin name="${name}_camera_controller" filename="libgazebo_ros_openni_kinect.so">
-          <cameraName>${name}/qhd</cameraName>
+        <plugin name='kinect_camera_controller' filename='libgazebo_ros_openni_kinect.so'>
+          <cameraName>kinect/qhd</cameraName>
           <alwaysOn>true</alwaysOn>
           <updateRate>30</updateRate>
           <imageTopicName>image_color</imageTopicName>
@@ -80,7 +120,7 @@
           <pointCloudTopicName>points</pointCloudTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <depthImageCameraInfoTopicName>camera_info</depthImageCameraInfoTopicName>
-          <frameName>${name}_rgb_optical_frame</frameName>
+          <frameName>kinect_rgb_optical_frame</frameName>
           <baseline>0.1</baseline>
           <distortion_k1>0.0</distortion_k1>
           <distortion_k2>0.0</distortion_k2>
@@ -90,14 +130,13 @@
           <pointCloudCutoff>0.05</pointCloudCutoff>
           <pointCloudCutoffMax>4.5</pointCloudCutoffMax>
         </plugin>
+        <pose frame=''>0 0 0 0 -0 0</pose>
       </sensor>
-
-      <!-- sd -->
-      <sensor type="depth" name="${name}">
-        <always_on>true</always_on>
-        <update_rate>30.0</update_rate>
-        <camera>
-          <horizontal_fov>${84.1*M_PI/180.0}</horizontal_fov>
+      <sensor name='kinect' type='depth'>
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <camera name='__default__'>
+          <horizontal_fov>1.46782</horizontal_fov>
           <image>
             <format>B8G8R8</format>
             <width>512</width>
@@ -109,12 +148,12 @@
           </clip>
           <noise>
             <type>gaussian</type>
-            <mean>0.0</mean>
+            <mean>0</mean>
             <stddev>0.005</stddev>
           </noise>
         </camera>
-        <plugin name="${name}_camera_controller" filename="libgazebo_ros_openni_kinect.so">
-          <cameraName>${name}/sd</cameraName>
+        <plugin name='kinect_camera_controller' filename='libgazebo_ros_openni_kinect.so'>
+          <cameraName>kinect/sd</cameraName>
           <alwaysOn>true</alwaysOn>
           <updateRate>30</updateRate>
           <imageTopicName>image_color</imageTopicName>
@@ -122,7 +161,7 @@
           <pointCloudTopicName>points</pointCloudTopicName>
           <cameraInfoTopicName>camera_info</cameraInfoTopicName>
           <depthImageCameraInfoTopicName>camera_info</depthImageCameraInfoTopicName>
-          <frameName>${name}_rgb_optical_frame</frameName>
+          <frameName>kinect_rgb_optical_frame</frameName>
           <baseline>0.1</baseline>
           <distortion_k1>0.0</distortion_k1>
           <distortion_k2>0.0</distortion_k2>
@@ -132,7 +171,8 @@
           <pointCloudCutoff>0.05</pointCloudCutoff>
           <pointCloudCutoffMax>4.5</pointCloudCutoffMax>
         </plugin>
+        <pose frame=''>0 0 0 0 -0 0</pose>
       </sensor>
-    </gazebo>
-  </xacro:macro>
-</robot>
+    </link>
+  </model>
+</sdf>

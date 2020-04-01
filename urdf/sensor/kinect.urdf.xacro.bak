@@ -6,7 +6,7 @@
       <visual>
 		<material name="black"/>
         <geometry>
-          <mesh filename="package://datasets_generator/meshes/kinectv2.stl"/>
+          <mesh filename="package://kinect_bringup/meshes/kinectv2.stl"/>
         </geometry>
       </visual>
       <collision>

@@ -8,7 +8,7 @@
   <arg name="verbose" default="false"/>
 
   <!-- Spawn the robot -->
-  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find kinect_bringup)/urdf/world.urdf.xacro'" />
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find datasets_generator)/urdf/world.urdf.xacro'" />
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
     <param name="publish_frequency" type="double" value="30.0" />
   </node>

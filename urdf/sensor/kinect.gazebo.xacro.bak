@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:include filename="$(find datasets_generator)/urdf/common.xacro" />
+  <xacro:include filename="$(find kinect_bringup)/urdf/common.xacro" />
 
   <xacro:macro name="kinect_gazebo" params="name">
     <gazebo reference="${name}_link">

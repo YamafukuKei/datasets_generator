@@ -4,13 +4,13 @@
     <visual>
       <material name="black"/>
       <geometry>
-        <mesh filename="package://kinect_bringup/meshes/HV8.STL"/>
+        <mesh filename="package://datasets_generator/meshes/HV8.STL"/>
       </geometry>
     </visual>
     <collision>
       <origin xyz="0 0 0"/>
       <geometry>
-        <mesh filename="package://kinect_bringup/meshes/HV8.STL"/>
+        <mesh filename="package://datasets_generator/meshes/HV8.STL"/>
       </geometry>
     </collision>
     <inertial>

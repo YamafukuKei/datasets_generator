@@ -4,7 +4,7 @@
     <visual>
       <material name="black"/>
       <geometry>
-        <mesh filename="package://datasets_generator/meshes/jigu.STL"/>
+        <mesh filename="package://kinect_bringup/meshes/jigu.STL"/>
       </geometry>
     </visual>
     <collision>

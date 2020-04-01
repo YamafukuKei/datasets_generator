@@ -1,13 +1,13 @@
 <launch>
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find datasets_generator)/worlds/empty.world"/>
+    <arg name="world_name" value="$(find kinect_bringup)/worlds/empty.world"/>
   </include>
 
   <arg name="gui" default="True" />
   <param name="use_gui" value="$(arg gui)"/>
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
 
-  <param name="robot_description" type="str" textfile="$(find datasets_generator)/urdf/models/object.urdf"/>
+  <param name="robot_description" type="str" textfile="$(find kinect_bringup)/urdf/models/object.urdf"/>
     <!-- <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model object" /> -->
 
   <node name="rviz" pkg="rviz" type="rviz" required="true" />

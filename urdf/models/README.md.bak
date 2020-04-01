@@ -11,7 +11,7 @@ $ roslaunch motion_planning initialization_sia5.launch
 #### 2. カメラモデルを Gazebo に登場させる
 
 ```
-$ /motoman_ws/src/datasets_generator/urdf/models
+$ /motoman_ws/src/kinect_bringup/urdf/models
 ```
 
 ##### urdf を使う場合
